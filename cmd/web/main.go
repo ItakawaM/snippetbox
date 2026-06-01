@@ -1,10 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"log"
 	"net/http"
 	"os"
+
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 type application struct {
@@ -19,11 +22,31 @@ func newApplication() *application {
 	}
 }
 
+func openDB(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("pgx", dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
+	return db, err
+}
+
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP Network Address")
+	dsn := flag.String("dsn", "", "PostreSQL Data Source Name")
 	flag.Parse()
 
 	app := newApplication()
+	db, err := openDB(*dsn)
+	if err != nil {
+		app.errorLogger.Fatal(err)
+	}
+	defer db.Close()
+
 	srv := &http.Server{
 		Addr:     *addr,
 		Handler:  app.routes(),

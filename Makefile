@@ -1,13 +1,16 @@
+include .env
+
+export
+
 BINARY ?= server.exe
-ADDRESS ?= :4000
 
 .PHONY: run help
 
 run:
-	go run ./cmd/web/ -addr=$(ADDRESS)
+	go run ./cmd/web/ -addr=$(HOST_ADDRESS) -dsn=$(POSTGRESQL_DSN)
 
 build:
-	go build -o $(BINARY) ./cmd/web/ -addr=$(ADDRESS)
+	go build -o $(BINARY) ./cmd/web/ -addr=$(HOST_ADDRESS)
 
 help:
 	@echo "Commands:"
