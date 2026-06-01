@@ -1,12 +1,13 @@
 BINARY ?= server.exe
+ADDRESS ?= :4000
 
 .PHONY: run help
 
 run:
-	go run ./cmd/web/
+	go run ./cmd/web/ -addr=$(ADDRESS)
 
 build:
-	go build -o $(BINARY) ./cmd/web/
+	go build -o $(BINARY) ./cmd/web/ -addr=$(ADDRESS)
 
 help:
 	@echo "Commands:"
