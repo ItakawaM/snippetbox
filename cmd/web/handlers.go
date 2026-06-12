@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
-	"unicode/utf8"
 
 	"github.com/ItakawaM/snippetbox/internal/models"
+	"github.com/ItakawaM/snippetbox/internal/validator"
 )
 
 type snippetCreateForm struct {
@@ -16,6 +15,7 @@ type snippetCreateForm struct {
 	Content     string
 	Expires     int
 	FieldErrors map[string]string
+	validator.Validator
 }
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -83,21 +83,12 @@ func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request
 		FieldErrors: map[string]string{},
 	}
 
-	if strings.TrimSpace(form.Title) == "" {
-		form.FieldErrors["Title"] = "This field cannot be blank"
-	} else if utf8.RuneCountInString(form.Title) > 100 {
-		form.FieldErrors["Title"] = "This field cannot be more than 100 characters long"
-	}
+	form.CheckField(validator.NotBlank(form.Title), "Title", "This field cannot be blank")
+	form.CheckField(validator.MaxChars(form.Title, 100), "Title", "This field cannot be more than 100 characters long")
+	form.CheckField(validator.NotBlank(form.Content), "Content", "This field cannot be blank")
+	form.CheckField(validator.PermitttedInt(form.Expires, 1, 7, 365), "Expires", "This field must equal 1, 7 or 365")
 
-	if strings.TrimSpace(form.Content) == "" {
-		form.FieldErrors["Content"] = "This field cannot be blank"
-	}
-
-	if form.Expires != 1 && form.Expires != 7 && form.Expires != 365 {
-		form.FieldErrors["Expires"] = "This field must equal 1, 7 or 365"
-	}
-
-	if len(form.FieldErrors) > 0 {
+	if !form.Valid() {
 		data := newTemplateData()
 		data.Form = form
 		app.render(w, http.StatusUnprocessableEntity, "create.tmpl.html", data)
