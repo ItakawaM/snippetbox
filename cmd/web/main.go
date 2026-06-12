@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/ItakawaM/snippetbox/internal/models"
+	"github.com/go-playground/form/v4"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
@@ -17,6 +18,7 @@ type application struct {
 	errorLogger   *log.Logger
 	snippets      *models.SnippetModel
 	templateCache map[string]*template.Template
+	formDecoder   *form.Decoder
 }
 
 func main() {
@@ -38,11 +40,13 @@ func main() {
 		errorLogger.Fatal(err)
 	}
 
+	formDecoder := form.NewDecoder()
 	app := &application{
 		infoLogger:    infoLogger,
 		errorLogger:   errorLogger,
 		snippets:      &models.SnippetModel{DB: db},
 		templateCache: templateCache,
+		formDecoder:   formDecoder,
 	}
 
 	srv := &http.Server{
