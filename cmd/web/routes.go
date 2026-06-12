@@ -3,6 +3,8 @@ package main
 import (
 	"net/http"
 	"path/filepath"
+
+	"github.com/justinas/alice"
 )
 
 type neuteredFileSystem struct {
@@ -44,5 +46,7 @@ func (app *application) routes() http.Handler {
 	// mux.HandleFunc("POST /snippet/create", app.snippetCreate)
 	mux.HandleFunc("GET /snippet/view", app.snippetView)
 
-	return app.recoverPanic(app.logRequest(secureHeaders(mux)))
+	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
+
+	return standard.Then(mux)
 }
