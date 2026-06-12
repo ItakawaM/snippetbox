@@ -35,7 +35,7 @@ func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
 	return file, nil
 }
 
-func (app *application) routes() *http.ServeMux {
+func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 	fileserver := http.FileServer(neuteredFileSystem{http.Dir("./ui/static")})
 	mux.Handle("GET /static/", http.StripPrefix("/static", fileserver))
@@ -44,5 +44,5 @@ func (app *application) routes() *http.ServeMux {
 	// mux.HandleFunc("POST /snippet/create", app.snippetCreate)
 	mux.HandleFunc("GET /snippet/view", app.snippetView)
 
-	return mux
+	return secureHeaders(mux)
 }
