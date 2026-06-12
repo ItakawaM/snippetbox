@@ -41,9 +41,8 @@ func (app *application) routes() *http.ServeMux {
 	mux.Handle("GET /static/", http.StripPrefix("/static", fileserver))
 
 	mux.HandleFunc("GET /", app.home)
-	// TODO: Implement the following routes:
-	// mux.HandleFunc("GET /snippet/view", snippetView)
-	// mux.HandleFunc("POST /snippet/create", snippetCreate)
+	// mux.HandleFunc("POST /snippet/create", app.snippetCreate)
+	mux.HandleFunc("GET /snippet/view", app.snippetView)
 
 	return mux
 }
