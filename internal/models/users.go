@@ -46,11 +46,10 @@ func (m *UserModel) Insert(name string, email string, password string) (int, err
 }
 
 func (m *UserModel) Authenticate(email string, password string) (int, error) {
-	var id int
-	var hashedPassword []byte
-
 	statement := `SELECT id, hashed_password FROM users WHERE email = $1`
 
+	var id int
+	var hashedPassword []byte
 	if err := m.DB.QueryRow(statement, strings.ToLower(email)).Scan(&id, &hashedPassword); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return 0, ErrInvalidCredentials
@@ -71,5 +70,10 @@ func (m *UserModel) Authenticate(email string, password string) (int, error) {
 }
 
 func (m *UserModel) Exists(id int) (bool, error) {
-	return false, nil
+	statement := `SELECT EXISTS(SELECT true FROM users WHERE id = $1)`
+
+	var exists bool
+	err := m.DB.QueryRow(statement, id).Scan(&exists)
+
+	return exists, err
 }
