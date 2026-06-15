@@ -51,7 +51,7 @@ func MinChars(value string, n int) bool {
 	return utf8.RuneCountInString(value) >= n
 }
 
-func PermitttedInt(value int, permittedValues ...int) bool {
+func PermitttedValue[T comparable](value T, permittedValues ...T) bool {
 	return slices.Contains(permittedValues, value)
 }
 
