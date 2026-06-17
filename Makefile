@@ -7,7 +7,7 @@ MAIN_PATH := ./cmd/web/
 
 .DEFAULT_GOAL := help
 
-.PHONY: run build build-run clean help
+.PHONY: run build build-run clean test help
 
 run:
 	go run $(MAIN_PATH) -addr=$(HOST_ADDRESS) -dsn=$(POSTGRESQL_DSN)
@@ -18,9 +18,13 @@ build:
 build-run: build
 	./$(BINARY) -addr=$(HOST_ADDRESS) -dsn=$(POSTGRESQL_DSN)
 
+test:
+	go test ./... -v
+
 clean:
 	@echo "Cleaning up..."
 	@rm -f $(BINARY)
+	go clean
 	@echo "Done!"
 
 help:
