@@ -7,7 +7,7 @@ import (
 	"github.com/ItakawaM/snippetbox/internal/assert"
 )
 
-func Test_ping(t *testing.T) {
+func TestPing(t *testing.T) {
 	app := newTestApplcation(t)
 
 	ts := newTestServer(t, app.routes())
@@ -19,7 +19,7 @@ func Test_ping(t *testing.T) {
 	assert.Equal(t, string(body), "OK")
 }
 
-func Test_application_snippetView(t *testing.T) {
+func TestApplication_SnippetView(t *testing.T) {
 	app := newTestApplcation(t)
 	ts := newTestServer(t, app.routes())
 	defer ts.Close()

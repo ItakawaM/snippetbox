@@ -7,7 +7,7 @@ import (
 	"github.com/ItakawaM/snippetbox/internal/assert"
 )
 
-func Test_humanDate(t *testing.T) {
+func TestHumanDate(t *testing.T) {
 	tests := []struct {
 		name string
 		t    time.Time

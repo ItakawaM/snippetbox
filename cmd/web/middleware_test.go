@@ -10,7 +10,7 @@ import (
 	"github.com/ItakawaM/snippetbox/internal/assert"
 )
 
-func Test_secureHeaders(t *testing.T) {
+func TestSecureHeaders(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	r, err := http.NewRequest(http.MethodGet, "/", nil)
