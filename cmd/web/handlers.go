@@ -125,7 +125,7 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 
 	form.CheckField(validator.NotBlank(form.Name), "Name", "This field cannot be blank")
 	form.CheckField(validator.NotBlank(form.Email), "Email", "This field cannot be blank")
-	form.CheckField(!validator.Matches(form.Password, validator.EmailRX), "Email",
+	form.CheckField(validator.Matches(form.Email, validator.EmailRX), "Email",
 		"This field must be a valid email address")
 	form.CheckField(validator.NotBlank(form.Password), "Password", "This field cannot be blank")
 	form.CheckField(validator.ValidPassword(form.Password), "Password",
@@ -171,7 +171,7 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	form.CheckField(validator.NotBlank(form.Email), "Email", "This field cannot be blank")
-	form.CheckField(!validator.Matches(form.Password, validator.EmailRX), "Email",
+	form.CheckField(validator.Matches(form.Email, validator.EmailRX), "Email",
 		"This field must be a valid email address")
 	form.CheckField(validator.NotBlank(form.Password), "Password", "This field cannot be blank")
 	form.CheckField(validator.ValidPassword(form.Password), "Password",
