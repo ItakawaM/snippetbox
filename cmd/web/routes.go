@@ -37,6 +37,7 @@ func (app *application) routes() http.Handler {
 	mux.Handle("GET /account/view", protected.ThenFunc(app.accountView))
 	mux.Handle("GET /account/password/update", protected.ThenFunc(app.accountPasswordUpdate))
 	mux.Handle("POST /account/password/update", protected.ThenFunc(app.accountPasswordUpdatePost))
+	mux.Handle("POST /comment/create", protected.ThenFunc(app.commentCreatePost))
 
 	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 	return standard.Then(mux)

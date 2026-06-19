@@ -26,7 +26,7 @@
         {{with .Form.FieldErrors.Content}}
         <label class="error">{{.}}</label>
         {{end}}
-        <textarea name="content" class="comment">{{.Form.Content}}</textarea>
+        <textarea name="content" class="comment" required>{{.Form.Content}}</textarea>
     </div>
     <div>
         <input type="submit" value="Comment">
@@ -48,7 +48,7 @@
     </div>
 </div>
 {{else}}
-{{if .IsAuthenticated}}
+{{if $.IsAuthenticated}}
 <p>Be the first one to comment!</p>
 {{end}}
 {{end}}

@@ -315,3 +315,26 @@ func (app *application) accountPasswordUpdatePost(w http.ResponseWriter, r *http
 	app.sessionManager.Put(r.Context(), "flash", "Your password change was successful.")
 	http.Redirect(w, r, "/account/view", http.StatusSeeOther)
 }
+
+func (app *application) commentCreatePost(w http.ResponseWriter, r *http.Request) {
+	var form commentCreateForm
+	if err := app.decodePostForm(r, &form); err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	ownerID := app.sessionManager.GetInt(r.Context(), "authenticatedUserID")
+	if _, err := app.comments.Insert(ownerID, form.SnippetID, form.Content); err != nil {
+		if errors.Is(err, models.ErrSnippetExpired) {
+			app.sessionManager.Put(r.Context(), "flash", "Cannot comment on an expired snippet.")
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		} else {
+			app.serverError(w, err)
+		}
+
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", form.SnippetID), http.StatusSeeOther)
+}
