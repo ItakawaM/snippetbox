@@ -31,3 +31,13 @@ VALUES (
         '$2a$12$NuTjWXm3KKntReFwyBVHyuf/to.HEwTy.eS206TNfkGfr6HzGJSWG',
         '2022-01-01 10:00:00'
     );
+
+CREATE TABLE comments (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    owner_id INT NOT NULL REFERENCES users (id),
+    snippet_id INT NOT NULL REFERENCES snippets (id),
+    content TEXT NOT NULL,
+    created TIMESTAMPTZ NOT NULL
+);
+
+CREATE INDEX idx_comments_created ON comments (created);
