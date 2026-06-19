@@ -2,11 +2,13 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 )
 
 type CommentModelInterface interface {
 	Latest(snippetID int) ([]*Comment, error)
+	Insert(ownerID int, snippetID int, content string) (int, error)
 }
 
 type Comment struct {
@@ -51,4 +53,24 @@ func (m *CommentModel) Latest(snippetID int) ([]*Comment, error) {
 	}
 
 	return comments, nil
+}
+
+func (m *CommentModel) Insert(ownerID int, snippetID int, content string) (int, error) {
+	statement :=
+		`INSERT INTO comments (owner_id, snippet_id, content, created)
+    SELECT $1, $2, $3, NOW()
+    FROM snippets
+    WHERE id = $2 AND expires > NOW()
+    RETURNING id;`
+
+	var id int
+	if err := m.DB.QueryRow(statement, ownerID, snippetID, content).Scan(&id); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return 0, ErrSnippetExpired
+		}
+
+		return 0, err
+	}
+
+	return id, nil
 }
