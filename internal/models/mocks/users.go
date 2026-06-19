@@ -47,3 +47,7 @@ func (m *UserModel) Exists(id int) (bool, error) {
 		return false, nil
 	}
 }
+
+func (m *UserModel) PasswordUpdate(id int, currentPassword string, newPassword string) error {
+	return nil
+}
