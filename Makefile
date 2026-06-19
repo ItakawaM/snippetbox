@@ -10,13 +10,13 @@ MAIN_PATH := ./cmd/web/
 .PHONY: run build build-run clean test help
 
 run:
-	go run $(MAIN_PATH) -addr=$(HOST_ADDRESS) -dsn=$(POSTGRESQL_DSN)
+	go run $(MAIN_PATH) -addr=$(HOST_ADDRESS) -dsn=$(POSTGRESQL_DSN) -debug=$(DEBUG)
 
 build:
 	go build -o $(BINARY) $(MAIN_PATH)
 
 build-run: build
-	./$(BINARY) -addr=$(HOST_ADDRESS) -dsn=$(POSTGRESQL_DSN)
+	./$(BINARY) -addr=$(HOST_ADDRESS) -dsn=$(POSTGRESQL_DSN) -debug=$(DEBUG)
 
 test:
 	go test ./... -v
@@ -24,7 +24,7 @@ test:
 clean:
 	@echo "Cleaning up..."
 	@rm -f $(BINARY)
-	go clean
+	@go clean
 	@echo "Done!"
 
 help:
