@@ -37,6 +37,12 @@ type accountPasswordUpdateForm struct {
 	validator.Validator `form:"-"`
 }
 
+type commentCreateForm struct {
+	Content             string `form:"content"`
+	SnippetID           int    `form:"snippetID"`
+	validator.Validator `form:"-"`
+}
+
 func ping(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("OK"))
 }
@@ -77,8 +83,16 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	comments, err := app.comments.Latest(id)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
 	data := app.newTemplateData(r)
 	data.Snippet = snippet
+	data.Comments = comments
+	data.Form = commentCreateForm{}
 
 	app.render(w, http.StatusOK, "view.tmpl.html", data)
 }

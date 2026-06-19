@@ -47,6 +47,7 @@ func newTestApplcation(t *testing.T) *application {
 		infoLogger:     log.New(io.Discard, "", 0),
 		snippets:       &mocks.SnippetModel{},
 		users:          &mocks.UserModel{},
+		comments:       &mocks.CommentModel{},
 		templateCache:  templateCache,
 		formDecoder:    formDecoder,
 		sessionManager: sessionManager,
