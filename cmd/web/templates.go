@@ -17,6 +17,7 @@ type templateData struct {
 	Snippet         *models.Snippet
 	Snippets        []*models.Snippet
 	User            *models.User
+	Comments        []*models.Comment
 	Form            any
 	Flash           string
 	IsAuthenticated bool

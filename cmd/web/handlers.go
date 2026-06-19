@@ -37,6 +37,12 @@ type accountPasswordUpdateForm struct {
 	validator.Validator `form:"-"`
 }
 
+type commentCreateForm struct {
+	Content             string `form:"content"`
+	SnippetID           int    `form:"snippetID"`
+	validator.Validator `form:"-"`
+}
+
 func ping(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("OK"))
 }
@@ -77,8 +83,16 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	comments, err := app.comments.Latest(id)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
 	data := app.newTemplateData(r)
 	data.Snippet = snippet
+	data.Comments = comments
+	data.Form = commentCreateForm{}
 
 	app.render(w, http.StatusOK, "view.tmpl.html", data)
 }
@@ -300,4 +314,27 @@ func (app *application) accountPasswordUpdatePost(w http.ResponseWriter, r *http
 
 	app.sessionManager.Put(r.Context(), "flash", "Your password change was successful.")
 	http.Redirect(w, r, "/account/view", http.StatusSeeOther)
+}
+
+func (app *application) commentCreatePost(w http.ResponseWriter, r *http.Request) {
+	var form commentCreateForm
+	if err := app.decodePostForm(r, &form); err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	ownerID := app.sessionManager.GetInt(r.Context(), "authenticatedUserID")
+	if _, err := app.comments.Insert(ownerID, form.SnippetID, form.Content); err != nil {
+		if errors.Is(err, models.ErrSnippetExpired) {
+			app.sessionManager.Put(r.Context(), "flash", "Cannot comment on an expired snippet.")
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+			return
+		} else {
+			app.serverError(w, err)
+		}
+
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", form.SnippetID), http.StatusSeeOther)
 }

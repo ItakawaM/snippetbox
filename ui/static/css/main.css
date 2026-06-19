@@ -51,6 +51,13 @@ h2 {
     top: -9px;
 }
 
+h3 {
+    font-size: 18px;
+    margin-top: 28px;
+    margin-bottom: 14px;
+    position: relative;
+}
+
 a {
     color: #62CB31;
     text-decoration: none;
@@ -207,6 +214,11 @@ textarea {
     height: 266px;
 }
 
+textarea.comment {
+    height: 67px;
+}
+
+
 button {
     background: none;
     padding: 0;
@@ -258,6 +270,42 @@ button:hover {
 
 .snippet .metadata time:last-child {
     float: right;
+}
+
+.comment {
+    background-color: #FFFFFF;
+    border: 1px solid #EEEFF1;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    font-size: 0.9em;
+    color: #6A6C6F;
+}
+
+.comment pre {
+    padding: 12px 18px;
+    border-top: 1px solid #EEEFF1;
+    border-bottom: 1px solid #EEEFF1;
+    white-space: pre-wrap;
+}
+
+.comment .metadata {
+    background-color: #FAFBFC;
+    padding: 0.5em 18px;
+    overflow: auto;
+}
+
+.comment .metadata strong {
+    color: #6A6C6F;
+    font-weight: 600;
+}
+
+.comment .metadata span {
+    float: right;
+    font-size: 0.85em;
+}
+
+.comment .metadata time {
+    font-size: 0.85em;
 }
 
 div.flash {

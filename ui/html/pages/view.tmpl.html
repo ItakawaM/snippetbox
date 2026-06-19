@@ -2,6 +2,7 @@
 
 {{define "main"}}
 {{with .Snippet}}
+<h2>Snippet</h2>
 <div class="snippet">
     <div class="metadata">
         <strong>{{.Title}}</strong>
@@ -13,5 +14,42 @@
         <time>Expires: {{humanDate .Expires}}</time>
     </div>
 </div>
+{{end}}
+
+<h3>Comments</h3>
+{{if .IsAuthenticated}}
+<form action="/comment/create" method="POST">
+    <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
+    <input type='hidden' name='snippetID' value='{{.Snippet.ID}}'>
+    <div>
+        <label>Content:</label>
+        {{with .Form.FieldErrors.Content}}
+        <label class="error">{{.}}</label>
+        {{end}}
+        <textarea name="content" class="comment" required>{{.Form.Content}}</textarea>
+    </div>
+    <div>
+        <input type="submit" value="Comment">
+    </div>
+</form>
+{{else}}
+<p>Login to post comments!</p>
+{{end}}
+
+{{range .Comments}}
+<div class="comment">
+    <div class="metadata">
+        <strong>{{.OwnerName}}</strong>
+        <span>#{{.ID}}</span>
+    </div>
+    <pre><code>{{.Content}}</code></pre>
+    <div class="metadata">
+        <time>Created: {{humanDate .Created}}</time>
+    </div>
+</div>
+{{else}}
+{{if $.IsAuthenticated}}
+<p>Be the first one to comment!</p>
+{{end}}
 {{end}}
 {{end}}
