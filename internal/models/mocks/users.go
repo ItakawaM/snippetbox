@@ -1,6 +1,10 @@
 package mocks
 
-import "github.com/ItakawaM/snippetbox/internal/models"
+import (
+	"time"
+
+	"github.com/ItakawaM/snippetbox/internal/models"
+)
 
 type UserModel struct{}
 
@@ -10,6 +14,20 @@ func (m *UserModel) Insert(name string, email string, password string) (int, err
 		return 0, models.ErrDuplicateEmail
 	default:
 		return 1, nil
+	}
+}
+
+func (m *UserModel) Get(id int) (*models.User, error) {
+	switch id {
+	case 1:
+		return &models.User{
+			ID:      1,
+			Name:    "Alice",
+			Email:   "alice@example.com",
+			Created: time.Now(),
+		}, nil
+	default:
+		return nil, models.ErrNoRecord
 	}
 }
 
